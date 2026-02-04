@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "teste-tecnoponto",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
