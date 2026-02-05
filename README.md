@@ -23,7 +23,7 @@ Os retornos da aplicação foram padronizados com os nomes em **português**, as
 Exemplo de requisição:
 ```http
 [http://127.0.0.1:8000/api/personagens?nome=Rick](http://127.0.0.1:8000/api/personagens?nome=Rick)
-```
+ ```
 
 **Implementações / Melhorias possíveis**
 
