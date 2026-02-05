@@ -1,59 +1,81 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Teste Tecnoponto – Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este repositório contém o Backend da aplicação do teste, desenvolvido para listar e filtrar personagens em cards (integração com API externa) e visualizar logs de auditoria.
 
-## About Laravel
+## Sobre o Projeto e Decisões Técnicas
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+O projeto foi feito utilizando **PHP** com o uso do **Laravel 12**. A aplicação consulta uma API externa e trata os dados para a exibição, com a possibilidade de filtrar por nome de personagem. O sistema conta também com um registro de auditoria.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Decisões Técnicas:**
+Utilizei o **SQLite** como banco de dados para facilitar a "correção" do exercício e evitar configurações complexas de ambiente, mas sei que para utilizar o MariaDB basta alterar os campos do `.env`.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Uma implementação que fiz, que não estava explícita no enunciado, foi a criação de um **Service** e um **Controller** específicos para exibir os registros de auditoria. Acredito que isso agregue valor ao código e facilite a visualização dos dados registrados.
 
-## Learning Laravel
+**Desafios (Rate Limit):**
+Enfrentei um problema de *rate limit* onde a aplicação estava fazendo *n+1* requisições para consultar a dimensão e algumas informações do episódio; foi o maior desafio durante o desenvolvimento.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+A solução encontrada foi fazer **Batch Requests** (requisições em lote). Pesquisei para entender o funcionamento e implementei as chamadas agrupadas. Para evitar novos problemas de bloqueio da API, optei pela exibição padrão de **20 personagens** (conforme o retorno nativo da API externa). Sei que, caso fosse necessário exibir tudo, seria possível fazer um "loop" atendendo a condição de que o `info.next` da API externa fosse igual a nulo.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Utilização da API
 
-## Laravel Sponsors
+Os retornos da aplicação foram padronizados com os nomes em **português**, assim como solicitado no desafio. Portanto, a variável de filtro `nome` deve ser passada em português também.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Exemplo de requisição:
+```http
+[http://127.0.0.1:8000/api/personagens?nome=Rick](http://127.0.0.1:8000/api/personagens?nome=Rick)```
 
-### Premium Partners
+**Implementações / Melhorias possíveis**
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Entendo que existem outras implementações possíveis que poderiam enriquecer o projeto, tais como:
 
-## Contributing
+Uso de Cache para otimizar as consultas;
+Registrar os logs no próprio sistema de Logs do Laravel;
+Utilizar Swagger para documentar as rotas da API;
+Efetuar a tradução dinâmica de todos os campos da API.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Optei por seguir estritamente o escopo do projeto e focar na qualidade da entrega atual.
 
-## Code of Conduct
+## Como Rodar o Projeto
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Siga os passos abaixo para executar a aplicação localmente:
 
-## Security Vulnerabilities
+1.  **Clonar o repositório**
+    ```bash
+    git clone [https://github.com/730s/Teste-Tecnoponto-Backend]
+    ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+2.  **Acessar a pasta do projeto**:
+    ```bash
+    cd Teste-Tecnoponto-Backend
+    ```
 
-## License
+3.  **Instalar as dependências**:
+    Baixar todas as bibliotecas do PHP via Composer.
+    ```bash
+    composer install
+    ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+4.  **Configurar Ambiente e Banco**:
+    Cria o arquivo `.env`, gera a chave da aplicação e cria o banco SQLite.
+    (Coloquei a RICK_AND_MORTY_BASE_URL no .env example para facilitar na correção do exercício, mas entendo que as rotas de API externas devem ficar fora do ambiente de produção).
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    php artisan migrate
+    ```
+
+5.  **Execute o servidor**:
+    ```bash
+    php artisan serve
+    ```
+
+6.  **CONSULTAR A API**:
+    A API estará rodando no endereço:
+    [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+## Estrutura de Pastas
+
+- `app/Services/`: Contém a lógica de negócios e integração com APIs externas.
+- `app/Http/Controllers/`: Gerencia as requisições da API e respostas JSON.
+- `database/`: Local onde ficam as migrations e o arquivo do banco SQLite.
+- `routes/api.php`: Definição das rotas e endpoints da aplicação.
